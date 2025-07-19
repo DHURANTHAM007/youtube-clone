@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GlassTube - A Unique YouTube Clone</title>
+    <title>YouTube Clone</title>
     
-    <!-- Google Fonts: Lexend for a modern feel -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Font: Roboto (The official YouTube font) -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
     
     <!-- React and Babel for in-browser JSX compilation -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -19,26 +20,18 @@
     <script src="https://unpkg.com/@mui/material@5/umd/material-ui.development.js"></script>
 
     <style>
-      /* --- Global Styles & Glassmorphism Theme --- */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      /* --- Global Styles for YouTube's Look and Feel --- */
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
-        font-family: 'Lexend', sans-serif;
-        background-color: #0d1117; /* GitHub dark background */
-        background-image: 
-          radial-gradient(at 20% 20%, hsla(212,40%,40%,0.3) 0px, transparent 50%),
-          radial-gradient(at 80% 80%, hsla(288,40%,40%,0.3) 0px, transparent 50%),
-          radial-gradient(at 50% 10%, hsla(170,40%,40%,0.3) 0px, transparent 50%);
-        color: #f0f6fc;
+        font-family: 'Roboto', sans-serif;
+        background-color: #0F0F0F; /* YouTube's dark background */
+        color: #F1F1F1;
       }
       /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 10px; }
-      ::-webkit-scrollbar-track { background: #0d1117; }
-      ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 5px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0F0F0F; }
+      ::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #777; }
     </style>
 </head>
 <body>
@@ -47,202 +40,187 @@
     <script type="text/babel">
       // Destructure all the components we need from the global MaterialUI object
       const { 
-        AppBar, Box, Grid, Stack, Typography, Card, CardContent, 
-        CardMedia, Chip, Container, TextField, createTheme, ThemeProvider, CircularProgress
+        AppBar, Box, Grid, Stack, Typography, Card, CardContent, CardMedia,
+        Chip, Container, TextField, Button, IconButton, List, ListItem, ListItemIcon, ListItemText,
+        createTheme, ThemeProvider, CircularProgress,
+        Menu, Search, VideoCall, Notifications, Home, Explore, Subscriptions, VideoLibrary
       } = MaterialUI;
 
-      // --- 1. UNIQUE DUMMY DATA with CATEGORIES ---
+      // --- 1. DUMMY DATA with CATEGORIES ---
       const allVideos = [
-          { id: 1, embedId: 'SqcY0GlETPk', title: 'Build a Responsive Portfolio with React', channel: 'JavaScript Mastery', views: '1.1M', timestamp: '1 year ago', thumbnail: 'https://i.ytimg.com/vi/SqcY0GlETPk/hqdefault.jpg', category: 'ReactJS' },
-          { id: 2, embedId: 'bMknfKXIFA8', title: 'React Full Course for Beginners', channel: 'freeCodeCamp.org', views: '5.2M', timestamp: '2 years ago', thumbnail: 'https://i.ytimg.com/vi/bMknfKXIFA8/hqdefault.jpg', category: 'ReactJS' },
+          { id: 1, embedId: 'SqcY0GlETPk', title: 'Build a Responsive Portfolio with React & MUI', channel: 'JavaScript Mastery', views: '1.1M', timestamp: '1 year ago', thumbnail: 'https://i.ytimg.com/vi/SqcY0GlETPk/hqdefault.jpg', category: 'Coding' },
+          { id: 2, embedId: 'bMknfKXIFA8', title: 'React Full Course for Beginners (2022)', channel: 'freeCodeCamp.org', views: '5.2M', timestamp: '2 years ago', thumbnail: 'https://i.ytimg.com/vi/bMknfKXIFA8/hqdefault.jpg', category: 'Coding' },
           { id: 3, embedId: 'uXesN0cPQ_I', title: 'Top 5 New Games of the Year', channel: 'IGN', views: '3.4M', timestamp: '3 months ago', thumbnail: 'https://i.ytimg.com/vi/uXesN0cPQ_I/hqdefault.jpg', category: 'Gaming' },
-          { id: 4, embedId: 'Rz-sO-gZIro', title: 'Lo-fi Hip Hop Radio - Beats to Relax/Study to', channel: 'Lofi Girl', views: '1.3B', timestamp: 'Live', thumbnail: 'https://i.ytimg.com/vi/Rz-sO-gZIro/hqdefault.jpg', category: 'Music' },
-          { id: 5, embedId: 'Ke90Tje7VS0', title: 'The Official Introduction to Next.js', channel: 'Vercel', views: '850K', timestamp: '11 months ago', thumbnail: 'https://i.ytimg.com/vi/Ke90Tje7VS0/hqdefault.jpg', category: 'ReactJS' },
-          { id: 6, embedId: '6l8y_n84_vU', title: 'Building a SaaS with Stripe & Next.js', channel: 'Fireship', views: '700K', timestamp: '8 months ago', thumbnail: 'https://i.ytimg.com/vi/6l8y_n84_vU/hqdefault.jpg', category: 'Tech' },
-          { id: 7, embedId: 'n3z3h1rz6h0', title: 'VALORANT - Official Gameplay Trailer', channel: 'VALORANT', views: '35M', timestamp: '2 years ago', thumbnail: 'https://i.ytimg.com/vi/n3z3h1rz6h0/hqdefault.jpg', category: 'Gaming' },
-          { id: 8, embedId: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up - Official Video', channel: 'Rick Astley', views: '1.2B', timestamp: '12 years ago', thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', category: 'Music' },
+          { id: 4, embedId: 'Rz-sO-gZIro', title: 'lofi hip hop radio - beats to relax/study to', channel: 'Lofi Girl', views: '1.3B', timestamp: 'Live', thumbnail: 'https://i.ytimg.com/vi/Rz-sO-gZIro/hqdefault.jpg', category: 'Music' },
+          { id: 5, embedId: '6l8y_n84_vU', title: 'Building a SaaS with Stripe & Next.js', channel: 'Fireship', views: '700K', timestamp: '8 months ago', thumbnail: 'https://i.ytimg.com/vi/6l8y_n84_vU/hqdefault.jpg', category: 'Coding' },
+          { id: 6, embedId: 'n3z3h1rz6h0', title: 'VALORANT - Official Gameplay Trailer', channel: 'VALORANT', views: '35M', timestamp: '2 years ago', thumbnail: 'https://i.ytimg.com/vi/n3z3h1rz6h0/hqdefault.jpg', category: 'Gaming' },
+          { id: 7, embedId: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up - Official Video', channel: 'Rick Astley', views: '1.2B', timestamp: '12 years ago', thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg', category: 'Music' },
       ];
-      const categories = ['All', 'ReactJS', 'Gaming', 'Music', 'Tech'];
+      const categories = ['All', 'Coding', 'Gaming', 'Music', 'Movies', 'Sports'];
       
-      // --- 2. REUSABLE COMPONENTS with UNIQUE STYLING ---
+      // --- 2. REUSABLE COMPONENTS with YOUTUBE STYLING ---
 
-      const VideoCard = ({ video, onVideoSelect, featured = false }) => (
+      const VideoCard = ({ video, onVideoSelect }) => (
         <Card 
           onClick={() => onVideoSelect(video)}
           sx={{ 
             width: '100%', 
+            background: 'none', 
             boxShadow: 'none', 
-            borderRadius: '12px', 
             cursor: 'pointer',
-            color: '#f0f6fc',
-            // Glassmorphism styles
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            '&:hover': {
-                transform: 'translateY(-5px)',
-                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
-            }
+            color: '#F1F1F1'
           }}
         >
           <CardMedia
             image={video.thumbnail}
             alt={video.title}
-            sx={{ width: '100%', height: featured ? 300 : 180 }}
+            sx={{ width: '100%', height: 180, borderRadius: '12px' }}
           />
-          <CardContent>
-            <Typography variant="h6" component="div" fontWeight="500" noWrap={!featured}>
+          <CardContent sx={{ px: 0, pt: 1.5 }}>
+            <Typography variant="subtitle1" fontWeight="500" lineHeight={1.4}>
               {video.title}
             </Typography>
-            <Typography variant="body2" color="#a1a1a1" mt={1}>
+            <Typography variant="body2" color="#AAAAAA" mt={0.5}>
               {video.channel}
             </Typography>
-            <Typography variant="body2" color="#a1a1a1">
+            <Typography variant="body2" color="#AAAAAA">
               {`${video.views} views • ${video.timestamp}`}
             </Typography>
           </CardContent>
         </Card>
       );
       
-      const SearchBar = ({ searchTerm, onSearchChange, selectedCategory, onCategorySelect }) => (
-          <Box sx={{ mb: 4, px: 2 }}>
-              <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Search for videos..."
-                  value={searchTerm}
-                  onChange={onSearchChange}
-                  sx={{ 
-                      mb: 2,
-                      '& .MuiOutlinedInput-root': {
-                          borderRadius: '30px',
-                          backgroundColor: 'rgba(0,0,0,0.3)',
-                          '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                          '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-                      },
-                      input: { color: 'white' },
-                  }}
-              />
-              <Stack direction="row" spacing={1} justifyContent="center">
+      const CategoryChips = ({ selectedCategory, onCategorySelect }) => (
+          <Box sx={{ py: 1, borderTop: '1px solid #303030', borderBottom: '1px solid #303030', background: '#0F0F0F', position: 'sticky', top: 64, zIndex: 10 }}>
+              <Stack direction="row" spacing={1} justifyContent="center" sx={{ overflowX: 'auto', p:1 }}>
                   {categories.map(category => (
                       <Chip 
                           key={category}
                           label={category} 
                           onClick={() => onCategorySelect(category)}
-                          color={selectedCategory === category ? 'primary' : 'default'}
                           sx={{ 
                               color: 'white',
-                              backgroundColor: selectedCategory !== category ? 'rgba(255,255,255,0.1)' : undefined
+                              cursor: 'pointer',
+                              backgroundColor: selectedCategory === category ? '#FFFFFF' : '#373737',
+                              color: selectedCategory === category ? '#0F0F0F' : '#FFFFFF',
+                              '&:hover': {
+                                  backgroundColor: selectedCategory === category ? '#FFFFFF' : '#4d4d4d'
+                              }
                           }}
                       />
                   ))}
               </Stack>
           </Box>
       );
-      
-      // --- 3. PAGE COMPONENTS ---
 
-      const Feed = ({ videos, onVideoSelect, searchProps }) => (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
-          <SearchBar {...searchProps} />
-          <Grid container spacing={4}>
-            {/* Featured Video */}
-            {videos[0] && (
-              <Grid item xs={12}>
-                <VideoCard video={videos[0]} onVideoSelect={onVideoSelect} featured={true} />
-              </Grid>
-            )}
-            {/* Regular Videos */}
-            {videos.slice(1).map((video) => (
-              <Grid item xs={12} sm={6} md={4} key={video.id}>
-                <VideoCard video={video} onVideoSelect={onVideoSelect} />
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+      const Sidebar = () => {
+          const sidebarLinks = [
+              { text: 'Home', icon: <Home /> },
+              { text: 'Explore', icon: <Explore /> },
+              { text: 'Subscriptions', icon: <Subscriptions /> },
+              { text: 'Library', icon: <VideoLibrary /> }
+          ];
+          return (
+              <Box sx={{
+                  width: 240,
+                  height: 'calc(100vh - 64px)',
+                  position: 'sticky',
+                  top: 64,
+                  borderRight: '1px solid #303030',
+                  display: { xs: 'none', md: 'block' },
+                  color: 'white',
+                  py: 1
+              }}>
+                  <List>
+                      {sidebarLinks.map(({ text, icon }) => (
+                          <ListItem button key={text}>
+                              <ListItemIcon sx={{ color: 'white' }}>{icon}</ListItemIcon>
+                              <ListItemText primary={text} />
+                          </ListItem>
+                      ))}
+                  </List>
+              </Box>
+          );
+      };
+
+      const Navbar = ({ searchTerm, onSearchChange }) => (
+          <AppBar position="sticky" sx={{ background: '#0F0F0F', height: 64, boxShadow: 'none' }}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ height: '100%', px: 2 }}>
+                  {/* Left Section */}
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                      <IconButton edge="start" sx={{ color: 'white' }}><Menu /></IconButton>
+                      <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+                          <span style={{ color: '#FF0000' }}>You</span>Tube
+                      </Typography>
+                  </Stack>
+                  {/* Center Section */}
+                  <Box sx={{ width: '40%', display: 'flex' }}>
+                      <TextField
+                          fullWidth
+                          variant="outlined"
+                          placeholder="Search"
+                          value={searchTerm}
+                          onChange={onSearchChange}
+                          size="small"
+                          sx={{ 
+                              '& .MuiOutlinedInput-root': {
+                                  borderRadius: '20px 0 0 20px',
+                                  backgroundColor: '#121212',
+                                  '& fieldset': { borderColor: '#303030' },
+                              },
+                              input: { color: 'white' }
+                          }}
+                      />
+                      <Button variant="contained" sx={{ 
+                          borderRadius: '0 20px 20px 0', 
+                          background: '#303030',
+                          boxShadow: 'none',
+                          minWidth: '64px',
+                          '&:hover': { background: '#4d4d4d' }
+                      }}>
+                          <Search />
+                      </Button>
+                  </Box>
+                  {/* Right Section */}
+                  <Stack direction="row" spacing={1}>
+                      <IconButton sx={{ color: 'white' }}><VideoCall /></IconButton>
+                      <IconButton sx={{ color: 'white' }}><Notifications /></IconButton>
+                  </Stack>
+              </Stack>
+          </AppBar>
       );
       
-      const VideoDetail = ({ video, suggestedVideos, onVideoSelect }) => (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Stack direction={{ xs: 'column', lg: 'row' }} spacing={4}>
-                <Box flex={3}> {/* Main video takes more space */}
-                    <Box sx={{ width: '100%', position: 'sticky', top: '80px' }}>
-                        <Box sx={{ position: 'relative', paddingTop: '56.25%', borderRadius: '12px', overflow: 'hidden' }}>
-                            <iframe
-                                src={`https://www.youtube.com/embed/${video.embedId}?autoplay=1&color=white`}
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title={video.title}
-                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                            />
-                        </Box>
-                        <Typography variant="h4" fontWeight="700" mt={2}>
-                            {video.title}
-                        </Typography>
-                        <Typography color="#a1a1a1" variant="h6" mt={1}>
-                            {video.channel}
-                        </Typography>
-                    </Box>
-                </Box>
-                <Box flex={1}> {/* Suggested videos take less space */}
-                    <Typography variant="h5" fontWeight="500" mb={2}>
-                        Up Next
-                    </Typography>
-                    <Stack direction="column" spacing={2}>
-                        {suggestedVideos.map(v => <VideoCard key={v.id} video={v} onVideoSelect={onVideoSelect} />)}
-                    </Stack>
-                </Box>
-            </Stack>
-        </Container>
-      );
-
-      // --- 4. THE MAIN APP COMPONENT ---
+      // --- 3. THE MAIN APP COMPONENT ---
       
       const App = () => {
         const [loading, setLoading] = React.useState(true);
         const [videos, setVideos] = React.useState([]);
-        const [selectedVideo, setSelectedVideo] = React.useState(null);
         const [searchTerm, setSearchTerm] = React.useState('');
         const [selectedCategory, setSelectedCategory] = React.useState('All');
         
-        // Simulate initial data fetch
         React.useEffect(() => {
-          setTimeout(() => {
-            setVideos(allVideos);
-            setLoading(false);
-          }, 1500);
+          setTimeout(() => { setLoading(false); }, 1000);
         }, []);
 
-        const handleVideoSelect = (video) => {
-            setSelectedVideo(video);
-            window.scrollTo(0, 0);
-        };
-        
-        const handleHomeClick = () => setSelectedVideo(null);
-        
-        // Filtering logic using useMemo for performance
         const filteredVideos = React.useMemo(() => {
-            return videos
+            return allVideos
               .filter(video => selectedCategory === 'All' || video.category === selectedCategory)
               .filter(video => video.title.toLowerCase().includes(searchTerm.toLowerCase()));
-        }, [videos, searchTerm, selectedCategory]);
+        }, [searchTerm, selectedCategory]);
         
-        // Define our unique theme
         const theme = createTheme({
             palette: {
                 mode: 'dark',
-                primary: { main: '#00f5d4' }, // A vibrant teal
-                background: { default: '#0d1117' }
+                primary: { main: '#FF0000' }, 
+                background: { default: '#0F0F0F' }
             },
-            typography: { fontFamily: 'Lexend, sans-serif' }
+            typography: { fontFamily: 'Roboto, sans-serif' }
         });
 
         if (loading) {
             return (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <CircularProgress />
+                    <CircularProgress color="primary" />
                 </Box>
             );
         }
@@ -250,49 +228,28 @@
         return (
           <ThemeProvider theme={theme}>
             <Box sx={{ minHeight: '100vh' }}>
-              
-              <AppBar position="sticky" sx={{ 
-                background: 'rgba(13, 17, 23, 0.8)', 
-                backdropFilter: 'blur(10px)',
-                boxShadow: 'none',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-              }}>
-                <Container maxWidth="xl">
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ height: 64 }}>
-                        <Typography onClick={handleHomeClick} variant="h5" sx={{ cursor: 'pointer', fontWeight: '700' }}>
-                            GlassTube
-                        </Typography>
-                    </Stack>
-                </Container>
-              </AppBar>
-              
-              <main>
-                {selectedVideo ? (
-                  <VideoDetail 
-                    video={selectedVideo} 
-                    suggestedVideos={videos.filter(v => v.id !== selectedVideo.id)}
-                    onVideoSelect={handleVideoSelect} 
-                  />
-                ) : (
-                  <Feed 
-                    videos={filteredVideos} 
-                    onVideoSelect={handleVideoSelect}
-                    searchProps={{
-                        searchTerm,
-                        onSearchChange: (e) => setSearchTerm(e.target.value),
-                        selectedCategory,
-                        onCategorySelect: (category) => setSelectedCategory(category)
-                    }} 
-                  />
-                )}
-              </main>
-
+              <Navbar searchTerm={searchTerm} onSearchChange={(e) => setSearchTerm(e.target.value)} />
+              <Stack direction="row">
+                <Sidebar />
+                <Box flex={1} sx={{ overflowY: 'auto', height: 'calc(100vh - 64px)' }}>
+                    <CategoryChips selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} />
+                    <Box p={3}>
+                        <Grid container spacing={3}>
+                            {filteredVideos.map((video) => (
+                              <Grid item xs={12} sm={6} md={4} lg={3} key={video.id}>
+                                <VideoCard video={video} onVideoSelect={() => {}} />
+                              </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                </Box>
+              </Stack>
             </Box>
           </ThemeProvider>
         );
       };
 
-      // --- 5. RENDER THE APP TO THE DOM ---
+      // --- 4. RENDER THE APP TO THE DOM ---
       const root = ReactDOM.createRoot(document.getElementById('root'));
       root.render(<App />);
 
