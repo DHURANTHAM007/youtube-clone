@@ -1,64 +1,56 @@
-// src/components/Navbar.js
 import React from 'react';
-import { Stack, Box, Typography, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Stack, Box, Typography, TextField, IconButton, InputAdornment, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { YouTube, Search, VideoCall, Notifications, AccountCircle } from '@mui/icons-material';
+import { Menu, Search, VideoCall, Notifications } from '@mui/icons-material';
 
 const Navbar = () => (
   <Stack 
     direction="row" 
     alignItems="center" 
+    justifyContent="space-between"
     p={2} 
     sx={{ 
       position: 'sticky', 
       background: '#0F0F0F', 
       top: 0, 
-      justifyContent: 'space-between',
-      borderBottom: '1px solid #303030',
+      height: '64px',
+      borderBottom: '1px solid #272727',
       zIndex: 10
     }}
   >
-    {/* Logo */}
-    <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-      <YouTube sx={{ color: 'red', fontSize: '32px' }} />
-      <Typography variant="h6" fontWeight="bold" sx={{ color: 'white', ml: 1, display: { xs: 'none', sm: 'block' } }}>
-        YouTube
-      </Typography>
-    </Link>
+    <Stack direction="row" alignItems="center" spacing={2}>
+      <IconButton sx={{ color: 'white' }}><Menu /></IconButton>
+      <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/159px-YouTube_full-color_icon_%282017%29.svg.png" alt="logo" height={25} />
+        <Typography variant="h6" fontWeight="bold" sx={{ color: 'white', ml: 1, display: { xs: 'none', sm: 'block' } }}>
+          YouTube
+        </Typography>
+      </Link>
+    </Stack>
 
-    {/* Search Bar */}
-    <Box sx={{ width: '40%' }}>
+    <Box sx={{ width: '40%', display: { xs: 'none', md: 'block' } }}>
       <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="Search"
-        size="small"
+        fullWidth variant="outlined" placeholder="Search" size="small"
         sx={{
           '& .MuiOutlinedInput-root': {
-            borderRadius: '20px',
-            '& fieldset': { borderColor: '#303030' },
+            borderRadius: '20px', '& fieldset': { borderColor: '#303030' },
             '&:hover fieldset': { borderColor: 'gray' },
-            '&.Mui-focused fieldset': { borderColor: 'white' },
-          },
-          input: { color: 'white' },
+          }, input: { color: 'white' },
         }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton>
-                <Search sx={{ color: 'gray' }} />
-              </IconButton>
+              <IconButton><Search sx={{ color: 'gray' }} /></IconButton>
             </InputAdornment>
           ),
         }}
       />
     </Box>
     
-    {/* Icons */}
     <Stack direction="row" spacing={2} alignItems="center">
       <IconButton><VideoCall sx={{ color: 'white' }} /></IconButton>
       <IconButton><Notifications sx={{ color: 'white' }} /></IconButton>
-      <IconButton><AccountCircle sx={{ color: 'white' }} /></IconButton>
+      <Avatar sx={{ width: 32, height: 32 }} />
     </Stack>
   </Stack>
 );
