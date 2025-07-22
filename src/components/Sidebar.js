@@ -1,6 +1,5 @@
-// src/components/Sidebar.js
 import React from 'react';
-import { Stack, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Stack, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { Home, Explore, Subscriptions, VideoLibrary } from '@mui/icons-material';
 
 const categories = [
@@ -13,20 +12,20 @@ const categories = [
 const Sidebar = () => (
   <Stack
     sx={{
-      height: { sx: 'auto', md: '95vh' },
-      borderRight: '1px solid #303030',
-      px: { sx: 0, md: 2 },
+      width: { xs: 'auto', md: '240px' },
+      height: 'calc(100vh - 64px)',
+      borderRight: '1px solid #272727',
+      px: { xs: 0, md: 2 },
       color: 'white',
-      position: 'sticky',
-      top: 80, // Adjust for Navbar height
+      display: { xs: 'none', md: 'flex' }
     }}
   >
     <List>
       {categories.map((category) => (
-        <ListItem button key={category.name}>
+        <ListItemButton key={category.name} sx={{ borderRadius: '8px' }}>
           <ListItemIcon sx={{ color: 'white' }}>{category.icon}</ListItemIcon>
           <ListItemText primary={category.name} />
-        </ListItem>
+        </ListItemButton>
       ))}
     </List>
   </Stack>
