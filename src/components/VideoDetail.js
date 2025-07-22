@@ -1,21 +1,18 @@
-// src/components/VideoDetail.js
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Box, Stack, Typography, Avatar } from '@mui/material';
 import ReactPlayer from 'react-player/youtube';
-import VideoCard from './VideoCard';
-import mockData from '../mockData'; // Use mock data for suggestions
+import mockData from '../utils/mockData';
 
 const VideoDetail = () => {
-  const { id } = useParams(); // Get the video ID from the URL
+  const { id } = useParams();
 
   return (
-    <Box minHeight="95vh" p={2}>
+    <Box minHeight="95vh" p={3}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
-        {/* Main Video Player */}
         <Box flex={3}>
-          <Box sx={{ width: '100%', position: 'sticky', top: '86px' }}>
-            <ReactPlayer url={`https://www.youtube.com/watch?v=${id}`} className="react-player" controls width="100%" />
+          <Box sx={{ width: '100%' }}>
+            <ReactPlayer url={`https://www.youtube.com/watch?v=${id}`} className="react-player" controls width="100%" height="50vh" />
             <Typography color="white" variant="h5" fontWeight="bold" p={2}>
               Video Title Placeholder
             </Typography>
@@ -24,19 +21,19 @@ const VideoDetail = () => {
                 <Avatar />
                 <Typography variant="subtitle1">Channel Name</Typography>
               </Stack>
-              {/* Like/Dislike/Share buttons would go here */}
             </Stack>
           </Box>
         </Box>
 
-        {/* Suggested Videos */}
-        <Box flex={1} px={2} py={{ md: 1, xs: 5 }}>
+        <Box flex={1}>
           <Typography variant="h6" fontWeight="bold" color="white" mb={2}>
-            Suggested Videos
+            Up Next
           </Typography>
           <Stack direction="column" spacing={2}>
             {mockData.items.map((item, index) => (
-              <VideoCard key={index} video={item} />
+              <Link to={`/video/${item.id.videoId}`} key={index}>
+                  <img src={item.snippet.thumbnails.high.url} alt={item.snippet.title} style={{ width: '160px', borderRadius: '8px' }} />
+              </Link>
             ))}
           </Stack>
         </Box>
